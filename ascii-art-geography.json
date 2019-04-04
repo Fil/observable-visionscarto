@@ -1,0 +1,146 @@
+{
+  "id": "db96d1e1842650a3",
+  "slug": "ascii-art-geography",
+  "trashed": false,
+  "likes": 2,
+  "forks": 0,
+  "fork_of": {
+    "id": "3ec7fe99591652a1",
+    "slug": "mapfill",
+    "title": "Mapfill",
+    "owner": {
+      "id": "45a379fcfcb14253",
+      "github_login": "Fil",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+      "login": "fil",
+      "name": "Fil",
+      "bio": "Vocateur.",
+      "home_url": "https://visionscarto.net/",
+      "type": "individual"
+    },
+    "version": 276
+  },
+  "thumbnail": "53d3cd35b0ad022eea0f3a68120df634b1895d3c36869c6e8927dcf47222b357",
+  "owner": {
+    "id": "166c5a16a7264bea",
+    "avatar_url": "https://avatars.observableusercontent.com/avatar/3c1f9e91aa4fb1a16a7b791182b2240994b1ad843f76b27f7982ec52251eeec1",
+    "login": "visionscarto",
+    "name": "Visionscarto",
+    "bio": "Maps — and other representations of the world.",
+    "home_url": "https://visionscarto.net",
+    "type": "team"
+  },
+  "creator": {
+    "id": "45a379fcfcb14253",
+    "github_login": "Fil",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+    "login": "fil",
+    "name": "Fil",
+    "bio": "Vocateur.",
+    "home_url": "https://visionscarto.net/"
+  },
+  "collections": [],
+  "update_time": "2019-03-14T07:57:06.728Z",
+  "publish_time": "2019-03-14T07:50:57.819Z",
+  "publish_version": 702,
+  "edit_unpublished": false,
+  "version": 702,
+  "title": "ASCII Art Geography",
+  "nodes": [
+    {
+      "id": 0,
+      "value": "md`# ASCII Art Geography\n\nA function of location, a text scale… a text map.`",
+      "pinned": false
+    },
+    {
+      "id": 677,
+      "value": "viewof w = slider({\n  min: 10,\n  max: 400,\n  value: 120,\n  step: 1,\n  description: \"Text width\"\n})",
+      "pinned": false
+    },
+    {
+      "id": 16,
+      "value": "{\n  const str = mapfill(countryflag, projection, {\n    w\n  });\n  return html`<pre style=\"font-family: monospace; font-size: ${(0.8 * width) /\n    w}px; line-height:1.25em;\">${str.replace(\"\\n\", \"<br>\")}`;\n}",
+      "pinned": false
+    },
+    {
+      "id": 514,
+      "value": "viewof mode = select({\n  options: [\n    { value: \"land\", label: \"Land\" },\n    { value: \"code\", label: \"Country code\" },\n    { value: \"flag\", label: \"Flag\" },\n    { value: \"randomoji\", label: \"Randomoji\" }\n    //{ value: \"tz\", label: \"Time Zone\" }\n    //    { value: \"natural\", label: \"Natural\" }\n  ],\n  description: \"mode\",\n  value: \"land\"\n})",
+      "pinned": false
+    },
+    {
+      "id": 497,
+      "value": "viewof projection = projectionInput({\n  name: \"projection\",\n  value:\n    new URLSearchParams(html`<a href>`.search).get(\"projection\") ||\n    \"Bertin’s 1953\"\n})",
+      "pinned": false
+    },
+    {
+      "id": 670,
+      "value": "viewof ata = checkbox({\n  options: [\"Ignore Antarctica\"],\n  value: \"Ignore Antarctica\"\n})",
+      "pinned": false
+    },
+    {
+      "id": 701,
+      "value": "md`_Note: if you know how to make monospace emoji, ping me!_`",
+      "pinned": false
+    },
+    {
+      "id": 25,
+      "value": "function countryflag(c) {\n  if (!c) return \"??\";\n\n  if (mode == \"land\") return \"**\";\n\n  const code = c.properties.iso_a2.replace(\n    \"-99\",\n    c.properties.adm0_a3_is.substr(0, 2)\n  );\n\n  if (mode == \"flag\") return emojiflag(code);\n  if (mode == \"randomoji\")\n    return String.fromCodePoint((\"👹\".codePointAt(0) + Math.random() * 90) | 0);\n  return code;\n}",
+      "pinned": false
+    },
+    {
+      "id": 386,
+      "value": "import {emojiflag} from \"@fil/emoji-flags\"",
+      "pinned": false
+    },
+    {
+      "id": 168,
+      "value": "md`----`",
+      "pinned": false
+    },
+    {
+      "id": 2,
+      "value": "function mapfill(\n  colorPoint,\n  projection,\n  options = { debug: false, land: {}, graticule: {}, w: 80 }\n) {\n  const w = options.w,\n    h = ((500 / 960) * w) | 0,\n    map = Array.from({ length: h }, () =>\n      Array.from({ length: w }, () => \"  \")\n    );\n\n  const context = DOM.context2d(w, h, 2),\n    path = d3\n      .geoPath(projection.fitSize([w, h], { type: \"Sphere\" }))\n      .context(context);\n\n  context.fillStyle = \"white\";\n  context.strokeStyle = \"black\";\n  context.lineWidth = 0.5;\n\n  const features = [\n    { type: \"Sphere\", l: \" .\" },\n    ...countries.features.map(f => ((f.l = countryflag(f)), f))\n  ];\n\n  for (const f of features) {\n    context.clearRect(0, 0, w, h);\n    context.save();\n    context.beginPath();\n    path({ type: \"Sphere\" });\n    context.clip();\n\n    context.beginPath();\n    path(f);\n    context.fill();\n    context.stroke();\n    context.restore();\n\n    const data = context.getImageData(0, 0, 2 * w, 2 * h).data;\n\n    //yield context.canvas;\n\n    for (let y = 0; y < h; y++) {\n      for (let x = 0; x < w; x++) {\n        const i = 2 * x + 4 * w * y,\n          r = data[4 * i];\n        if (r) map[y][x] = f.l;\n      }\n    }\n  }\n\n  return map.map(d => d.join(\"\")).join(\"\\n\");\n}",
+      "pinned": true
+    },
+    {
+      "id": 29,
+      "value": "world = d3.json(\n  \"https://unpkg.com/visionscarto-world-atlas@0.0.4/world/110m_countries.geojson\"\n)",
+      "pinned": false
+    },
+    {
+      "id": 605,
+      "value": "topojson = require(\"topojson@3\")",
+      "pinned": false
+    },
+    {
+      "id": 610,
+      "value": "countries = {\n  const w = topojson.simplify(\n    topojson.presimplify(topojson.topology({ countries: world })),\n    1\n  );\n  const c = topojson\n    .feature(w, w.objects.countries)\n    .features.filter(f => d3.geoArea(f) > 0.0001)\n    .filter(f => !ata || f.properties.iso_a3 !== \"ATA\"); // ignore Antarctica\n  return { features: c };\n}",
+      "pinned": false
+    },
+    {
+      "id": 8,
+      "value": "d3 = require(\"d3-color@1\", \"d3-delaunay@4\", \"d3-fetch@1\", \"d3-geo@1\", \"d3-geo-projection@2\", \"d3-geo-polygon@1\", \"d3-scale@2\")",
+      "pinned": false
+    },
+    {
+      "id": 495,
+      "value": "import {projectionInput} from \"@fil/d3-projections\"",
+      "pinned": false
+    },
+    {
+      "id": 250,
+      "value": "import {signature} from \"@fil/signature\"",
+      "pinned": false
+    },
+    {
+      "id": 516,
+      "value": "import {checkbox, select, slider} from \"@jashkenas/inputs\"",
+      "pinned": false
+    },
+    {
+      "id": 251,
+      "value": "signature",
+      "pinned": false
+    }
+  ]
+}
