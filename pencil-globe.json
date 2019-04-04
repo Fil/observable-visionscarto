@@ -1,0 +1,126 @@
+{
+  "id": "1973841b59b85280",
+  "slug": "pencil-globe",
+  "trashed": false,
+  "likes": 9,
+  "forks": 0,
+  "fork_of": {
+    "id": "e856ea258e3f1675",
+    "slug": "pencil-airocean",
+    "title": "Pencil Airocean",
+    "owner": {
+      "id": "45a379fcfcb14253",
+      "github_login": "Fil",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+      "login": "fil",
+      "name": "Fil",
+      "bio": "Vocateur.",
+      "home_url": "https://visionscarto.net/",
+      "type": "individual"
+    },
+    "version": 366
+  },
+  "thumbnail": "ff9debee9b43fcc9b040d22cacbe53ffb555d5cb067c64a1480ebd40a6843e46",
+  "owner": {
+    "id": "166c5a16a7264bea",
+    "avatar_url": "https://avatars.observableusercontent.com/avatar/3c1f9e91aa4fb1a16a7b791182b2240994b1ad843f76b27f7982ec52251eeec1",
+    "login": "visionscarto",
+    "name": "Visionscarto",
+    "bio": "Maps — and other representations of the world.",
+    "home_url": "https://visionscarto.net",
+    "type": "team"
+  },
+  "creator": {
+    "id": "45a379fcfcb14253",
+    "github_login": "Fil",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+    "login": "fil",
+    "name": "Fil",
+    "bio": "Vocateur.",
+    "home_url": "https://visionscarto.net/"
+  },
+  "collections": [],
+  "update_time": "2019-03-12T16:27:25.831Z",
+  "publish_time": "2019-01-29T19:34:40.256Z",
+  "publish_version": 378,
+  "edit_unpublished": false,
+  "version": 378,
+  "title": "Pencil Globe",
+  "nodes": [
+    {
+      "id": 0,
+      "value": "md`# Pencil Globe\n\n\nA different approach for Mike’s [Pencil Sketch](https://bl.ocks.org/mbostock/e2a20d86124693ef0f93).\n\nReduces the number of GeoJSON points with [topojson.simplify](https://github.com/topojson/topojson-simplify#simplify), then draws the path with various [curve](https://github.com/d3/d3-shape#curves) approximations.\n\nThis version does canvas. Compare with [SVG](https://observablehq.com/@fil/pencil-airocean).`",
+      "pinned": false
+    },
+    {
+      "id": 119,
+      "value": "canvas = {\n  const context = DOM.context2d(width, height),\n    canvas = context.canvas;\n\n  while (true) {\n    context.clearRect(0, 0, width, height);\n    projection.rotate([new Date() / 200, -30]);\n\n    context.strokeStyle = \"#000\";\n    context.beginPath();\n    curvedPath(path({ type: \"Sphere\" }), d3.curveBasisClosed, context);\n    context.stroke();\n\n    const p = path(coarse);\n\n    context.beginPath();\n    curvedPath(p, null, context);\n    context.fillStyle = \"rgba(100,0,0,0.04)\";\n    context.fill();\n    curvedPath(p, d3.curveNatural, context);\n    curvedPath(p, d3.curveLinearClosed, context);\n    curvedPath(p, d3.curveBasisClosed, context);\n    context.strokeStyle = \"#666\";\n    context.lineWidth = 0.3;\n    context.stroke();\n    yield canvas;\n  }\n}",
+      "pinned": false
+    },
+    {
+      "id": 365,
+      "value": "md`----\n_compute a curve approximation_`",
+      "pinned": false
+    },
+    {
+      "id": 14,
+      "value": "import {curvedPath} from \"@fil/pencil-airocean\"",
+      "pinned": false
+    },
+    {
+      "id": 212,
+      "value": "projection = d3\n  .geoOrthographic()\n  .fitExtent([[0, 0], [width, 1.5 * height]], { type: \"Sphere\" })\n  .precision(1)",
+      "pinned": false
+    },
+    {
+      "id": 244,
+      "value": "path = d3.geoPath().projection(projection)",
+      "pinned": false
+    },
+    {
+      "id": 360,
+      "value": "md`----\n_define a coarse GeoJSON_`",
+      "pinned": false
+    },
+    {
+      "id": 203,
+      "value": "viewof details = slider({\n  min: 0,\n  max: 3,\n  value: 1.5,\n  step: 0.1,\n  description: \"Level of details\"\n})",
+      "pinned": false
+    },
+    {
+      "id": 29,
+      "value": "height = width * 0.6",
+      "pinned": false
+    },
+    {
+      "id": 2,
+      "value": "world = fetch(\n  \"https://unpkg.com/visionscarto-world-atlas@0.0.4/world/110m_land.geojson\"\n).then(d => d.json())",
+      "pinned": false
+    },
+    {
+      "id": 7,
+      "value": "coarse = {\n  let topo = topojson.topology({ world });\n\n  topo = topojson.presimplify(topo);\n  topo = topojson.simplify(topo, Math.pow(10, 2 - details));\n\n  return topojson.feature(topo, topo.objects.world);\n}",
+      "pinned": false
+    },
+    {
+      "id": 362,
+      "value": "md`----\n_imports_`",
+      "pinned": false
+    },
+    {
+      "id": 15,
+      "value": "d3 = require(\"d3@5\")",
+      "pinned": false
+    },
+    {
+      "id": 9,
+      "value": "topojson = require(\"topojson\")",
+      "pinned": false
+    },
+    {
+      "id": 201,
+      "value": "import {slider} from \"@jashkenas/inputs\"",
+      "pinned": false
+    }
+  ]
+}
