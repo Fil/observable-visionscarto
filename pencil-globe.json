@@ -2,7 +2,7 @@
   "id": "1973841b59b85280",
   "slug": "pencil-globe",
   "trashed": false,
-  "likes": 9,
+  "likes": 13,
   "forks": 0,
   "fork_of": {
     "id": "e856ea258e3f1675",
@@ -20,7 +20,7 @@
     },
     "version": 366
   },
-  "thumbnail": "ff9debee9b43fcc9b040d22cacbe53ffb555d5cb067c64a1480ebd40a6843e46",
+  "thumbnail": "3c6781e9bd78ad5e4e6b55c24ddbfa760060cc1e2836c32304534388c38d6abd",
   "owner": {
     "id": "166c5a16a7264bea",
     "avatar_url": "https://avatars.observableusercontent.com/avatar/3c1f9e91aa4fb1a16a7b791182b2240994b1ad843f76b27f7982ec52251eeec1",
@@ -40,11 +40,11 @@
     "home_url": "https://visionscarto.net/"
   },
   "collections": [],
-  "update_time": "2019-03-12T16:27:25.831Z",
+  "update_time": "2019-05-16T20:30:01.394Z",
   "publish_time": "2019-01-29T19:34:40.256Z",
-  "publish_version": 378,
+  "publish_version": 379,
   "edit_unpublished": false,
-  "version": 378,
+  "version": 379,
   "title": "Pencil Globe",
   "nodes": [
     {
@@ -94,7 +94,7 @@
     },
     {
       "id": 2,
-      "value": "world = fetch(\n  \"https://unpkg.com/visionscarto-world-atlas@0.0.4/world/110m_land.geojson\"\n).then(d => d.json())",
+      "value": "world = fetch(\n  \"https://unpkg.com/visionscarto-world-atlas@0.0.6/world/110m_land.geojson\"\n).then(d => d.json())",
       "pinned": false
     },
     {
