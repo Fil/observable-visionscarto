@@ -1,0 +1,81 @@
+{
+  "id": "6ca6b2d9ac9871a1",
+  "slug": "la-france-un-hexagone",
+  "trashed": false,
+  "likes": 1,
+  "forks": 2,
+  "fork_of": {
+    "id": "9fe528b6bd6c70d2",
+    "slug": null,
+    "title": "Urquhart des Communes de la région parisienne",
+    "owner": {
+      "id": "45a379fcfcb14253",
+      "github_login": "Fil",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+      "login": "fil",
+      "name": "Fil",
+      "bio": "Vocateur.",
+      "home_url": "https://visionscarto.net/",
+      "type": "individual"
+    },
+    "version": 159
+  },
+  "thumbnail": "81f1a84addfce0bbcec6fb395536fe79420e571dba7da04d870866adfa61d971",
+  "owner": {
+    "id": "166c5a16a7264bea",
+    "avatar_url": "https://avatars.observableusercontent.com/avatar/3c1f9e91aa4fb1a16a7b791182b2240994b1ad843f76b27f7982ec52251eeec1",
+    "login": "visionscarto",
+    "name": "Visionscarto",
+    "bio": "Maps — and other representations of the world.",
+    "home_url": "https://visionscarto.net",
+    "type": "team"
+  },
+  "creator": {
+    "id": "45a379fcfcb14253",
+    "github_login": "Fil",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/7001?v=4",
+    "login": "fil",
+    "name": "Fil",
+    "bio": "Vocateur.",
+    "home_url": "https://visionscarto.net/"
+  },
+  "collections": [],
+  "update_time": "2019-07-22T16:26:52.873Z",
+  "publish_time": "2019-07-22T16:25:56.697Z",
+  "publish_version": 301,
+  "edit_unpublished": false,
+  "version": 301,
+  "title": "La France, un hexagone ?",
+  "nodes": [
+    {
+      "id": 0,
+      "value": "md`# La France, un hexagone ?\n\nEnveloppe convexe des communes de France métropolitaine.`",
+      "pinned": false
+    },
+    {
+      "id": 30,
+      "value": "MAP = {\n  const context = DOM.context2d(width, (width * 2) / 3),\n    projection = d3\n      .geoAzimuthalEqualArea()\n      .rotate([-2.9, -46.4])\n      .translate([width / 2, width / 3])\n      .scale(width * 3.9),\n    path = d3\n      .geoPath(projection)\n      .context(context)\n      .pointRadius(0.75);\n\n  context.beginPath(),\n    (context.lineWidth = 3.5),\n    path(hull),\n    (context.strokeStyle = \"red\"),\n    context.stroke();\n\n  context.beginPath(),\n    (context.fillStyle = \"#444\"),\n    path({\n      type: \"MultiPoint\",\n      coordinates: centroids.map(d => [+d.lon, +d.lat])\n    }),\n    context.fill();\n\n  return context.canvas;\n}",
+      "pinned": false
+    },
+    {
+      "id": 227,
+      "value": "md`Méthode:\n\nOn charge les données de centroides des communes, on conserve celles de la métropole (hors Corse), puis on calcule la triangulation de Delaunay sur les coordonnées sphériques; on en extrait le contour de l'enveloppe convexe (hull).\n\nDonnées sources: https://github.com/gregoiredavid/france-geojson/`",
+      "pinned": false
+    },
+    {
+      "id": 2,
+      "value": "centroids = d3.csv(\n  \"https://gist.githubusercontent.com/Fil/7e375a1fa2aac6da2af0086088907417/raw/c553073edb57c1b4f9db3ccd95006cd83c4e952b/france-communes-centroides.csv\"\n)",
+      "pinned": true
+    },
+    {
+      "id": 193,
+      "value": "hull = d3.geoVoronoi()\n  .x(d => +d.lon)\n  .y(d => +d.lat)(centroids.filter(d => d.lon < 8.5))\n  .hull()",
+      "pinned": true
+    },
+    {
+      "id": 5,
+      "value": "d3 = require(\"d3-fetch@1\", \"d3-geo@1\", \"d3-geo-voronoi@1\")",
+      "pinned": true
+    }
+  ]
+}
